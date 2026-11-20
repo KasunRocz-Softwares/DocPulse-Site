@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DocPulse — Release notes, approved before they're public</title>
+  <meta name="description" content="DocPulse keeps the full internal record of every release and publishes only the customer-facing notes a second person approved. Per-project public pages, a visual page designer, GitHub import and self-hosting with Docker.">
+  <meta name="theme-color" content="#04050a">
+  <meta property="og:title" content="DocPulse — Every release note, approved before it's public.">
+  <meta property="og:description" content="Internal release records, two-person approval, and a public release page per product that you design yourself.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://qulaxy.com/DocPulse-Site/">
+  <meta property="og:image" content="https://qulaxy.com/DocPulse-Site/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('rm');
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script type="module" src="kr-hero.js?v=3"></script>
+  <script type="module" src="app.js?v=1"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <a class="brand" href="#top" aria-label="DocPulse home">
+      <img src="icon.svg" alt="" width="28" height="28">
+      <span>DocPulse</span>
+    </a>
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <a href="#flow">Publishing</a>
+      <a href="#designer">Page designer</a>
+      <a href="#import">GitHub import</a>
+      <a href="#features">Features</a>
+      <a href="#setup">Setup</a>
+      <a class="nav-org" href="https://qulaxy.com/">← All projects</a>
+    </nav>
+    <div class="nav-end">
+      <a class="org" href="https://qulaxy.com/">All projects</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <canvas class="kr-planet" data-kind="waves" data-color="#ff7ab8" data-bleed data-radius="3.5" aria-hidden="true"></canvas>
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Release documentation &amp; publishing</p>
+        <h1 class="display">Every release note,<br><span class="accent-text">approved before it's public.</span></h1>
+        <p class="lede">DocPulse keeps the full internal record of every release: changes, documents, deployments and reviews. Your customers see only the notes a second person approved, on a public page you design for each product.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#flow">See how publishing works <span aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="#setup">Run it yourself</a>
+        </div>
+        <dl class="stats">
+          <div><dt>People to publish</dt><dd>2</dd></div>
+          <div><dt>Project roles</dt><dd>5</dd></div>
+          <div><dt>Page widgets</dt><dd>10</dd></div>
+        </dl>
+      </div>
+
+      <aside class="note-card" aria-label="Illustrative published release note">
+        <div class="note-head">
+          <span class="mono" id="note-project">Acme Web · release notes</span>
+          <span class="live"><i aria-hidden="true"></i>Public</span>
+        </div>
+        <p class="note-version" id="note-version">v2.4.0</p>
+        <h2 class="note-title" id="note-title">Faster checkout</h2>
+        <p class="note-date mono" id="note-date">Released Nov 10</p>
+        <ul class="note-changes" id="note-changes"></ul>
+        <p class="session-note">Illustrative data</p>
+      </aside>
+    </section>
+
+    <!-- HOW IT'S ORGANISED -->
+    <section class="section" id="model">
+      <div class="section-head">
+        <p class="kicker">// Two records, one release</p>
+        <h2 class="h2">What your team knows. What your customers read.</h2>
+        <p class="body">Every change carries an internal description for the team and, optionally, a public one. Only changes with a public description can ever reach the public page, and only after approval.</p>
+      </div>
+      <ol class="chain">
+        <li class="reveal"><span class="mono">01</span><b>Project</b><small>A product, its team, branding and public page</small></li>
+        <li class="reveal" style="--d:.06s"><span class="mono">02</span><b>Release</b><small>A version with type, channel and release date</small></li>
+        <li class="reveal" style="--d:.12s"><span class="mono">03</span><b>Changes</b><small>Feature, fix, security, performance and more</small></li>
+        <li class="reveal" style="--d:.18s"><span class="mono">04</span><b>Revision</b><small>A frozen copy of the public notes for approval</small></li>
+        <li class="reveal" style="--d:.24s"><span class="mono">05</span><b>Snapshot</b><small>The published page. It can't be edited, only revoked</small></li>
+      </ol>
+    </section>
+
+    <!-- PUBLISHING FLOW -->
+    <section class="section" id="flow">
+      <div class="section-head">
+        <p class="kicker">// Publishing</p>
+        <h2 class="h2">Nothing goes public on one person's say-so.</h2>
+        <p class="body">The author freezes the public notes into a revision. Someone else approves exactly that revision, and an Admin or Release manager publishes it. Change a word afterwards and it needs a new revision.</p>
+      </div>
+      <div class="pipeline reveal" id="pipeline">
+        <ol class="stages" id="stages">
+          <li data-who="Developer">Draft</li>
+          <li data-who="Developer">Internal review</li>
+          <li data-who="Developer">Approval revision</li>
+          <li data-who="Reviewer">Approved</li>
+          <li class="ship" data-who="Release manager">Published</li>
+        </ol>
+        <div class="pipeline-detail">
+          <div>
+            <span class="mono">Step</span>
+            <p class="demo-title" id="flow-title">Draft</p>
+            <p class="demo-sub" id="flow-sub">Write the release and its changes. Internal notes stay internal.</p>
+          </div>
+          <div class="who-card">
+            <span class="mono">Done by</span>
+            <b id="flow-who">Developer</b>
+            <small id="flow-rule">Admin, Release manager or Developer</small>
+          </div>
+        </div>
+        <div class="pipeline-controls">
+          <button class="btn btn-ghost" type="button" id="flow-prev" aria-label="Previous step">←</button>
+          <button class="btn btn-primary" type="button" id="flow-next">Next step <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+      <p class="stages-note"><span class="blocked">Self-approval</span> is refused by the server, even for system administrators, and every decision is in the audit log.</p>
+    </section>
+
+    <!-- PAGE DESIGNER -->
+    <section class="section split" id="designer">
+      <div>
+        <p class="kicker">// Public page designer</p>
+        <h2 class="h2">Each product gets its own release page.</h2>
+        <p class="body">Pick a theme, a layout and the widgets you want, preview it on desktop, tablet and mobile, then publish the design. Visitors only ever see the published version.</p>
+        <ul class="ticks">
+          <li><b>Ten widgets</b> to show, hide and reorder, from hero to email sign-up</li>
+          <li><b>Three layouts</b>: single column, sidebar right or sidebar left</li>
+          <li><b>Your colours and fonts</b>, with live contrast checks</li>
+          <li><b>Draft, then publish</b>, with every change in the audit log</li>
+        </ul>
+      </div>
+      <div class="designer reveal">
+        <div class="designer-bar">
+          <div class="seg" role="group" aria-label="Theme" id="theme-seg">
+            <button type="button" aria-pressed="true" data-theme="studio">Studio</button>
+            <button type="button" aria-pressed="false" data-theme="midnight">Midnight</button>
+            <button type="button" aria-pressed="false" data-theme="editorial">Editorial</button>
+            <button type="button" aria-pressed="false" data-theme="ocean">Ocean</button>
+          </div>
+          <div class="seg" role="group" aria-label="Layout" id="layout-seg">
+            <button type="button" aria-pressed="false" data-layout="single">Single</button>
+            <button type="button" aria-pressed="true" data-layout="right">Sidebar</button>
+          </div>
+        </div>
+        <div class="mini" id="mini" data-theme="studio" data-layout="right" aria-label="Preview of a public release page" role="img">
+          <div class="mini-head"><span class="mini-mark">A</span><b>Acme Web</b><i></i><i></i></div>
+          <div class="mini-hero"><small>What's new</small><b>Acme Web</b><span></span></div>
+          <div class="mini-grid">
+            <div class="mini-main">
+              <div class="mini-card"><small>Latest release</small><b>v2.4.0 · Faster checkout</b><span></span><em>Read release notes →</em></div>
+              <div class="mini-card"><small>Recent releases</small><span></span><span></span><span></span></div>
+            </div>
+            <div class="mini-side">
+              <div class="mini-card"><small>At a glance</small><b>54</b></div>
+              <div class="mini-card"><small>Email updates</small><span></span><em>Subscribe</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GITHUB IMPORT -->
+    <section class="section" id="import">
+      <div class="section-head">
+        <p class="kicker">// GitHub import</p>
+        <h2 class="h2">Bring your release history with you.</h2>
+        <p class="body">The importer reads a repository's GitHub releases and publishes them through the same approval flow. Four-part hotfix tags become proper versions, and pull-request titles are tidied into readable public notes.</p>
+      </div>
+      <div class="demo reveal">
+        <div class="map-table">
+          <div class="map-row map-headrow"><span class="mono">GitHub tag</span><span class="mono">DocPulse version</span><span class="mono">Type</span></div>
+          <div class="map-row"><code>prod-1.24.0</code><b>1.24.0</b><span class="tag">Minor</span></div>
+          <div class="map-row"><code>prod-1.25.0</code><b>1.25.0</b><span class="tag">Minor</span></div>
+          <div class="map-row"><code>prod-1.25.0.1</code><b>1.25.0-hotfix.1</b><span class="tag tag-hot">Hotfix</span></div>
+          <div class="map-row"><code>prod-1.25.2</code><b>1.25.2</b><span class="tag">Patch</span></div>
+        </div>
+        <div class="demo-side">
+          <span class="mono">One pull-request line</span>
+          <p class="raw"><code>* Feature/z93r0b7fju courier delivery report by @dev in https://github.com/acme/web/pull/716</code></p>
+          <span class="arrow" aria-hidden="true">↓</span>
+          <p class="clean"><span class="tag">Feature</span>Courier delivery report</p>
+          <p class="demo-sub">The author handle and link stay in the internal notes. The real GitHub release date is kept, and re-running the import skips what's already there.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="section-head">
+        <p class="kicker">// Everything around the notes</p>
+        <h2 class="h2">The parts a release process actually needs.</h2>
+      </div>
+      <div class="bento">
+        <article class="tile reveal"><span class="mono">Domains</span><h3>Your own domain</h3><p>Serve a product's release notes from its own domain, verified with a DNS record.</p></article>
+        <article class="tile reveal" style="--d:.05s"><span class="mono">Follow</span><h3>RSS and email</h3><p>Readers subscribe by feed or by email, with double opt-in and one-click unsubscribe.</p></article>
+        <article class="tile reveal" style="--d:.1s"><span class="mono">Languages</span><h3>Translated notes</h3><p>Publish a release in several languages. The page comes in English, Sinhala and Tamil.</p></article>
+        <article class="tile reveal" style="--d:.15s"><span class="mono">Clients</span><h3>Client-only notes</h3><p>Share a release with chosen client groups instead of everyone.</p></article>
+        <article class="tile reveal" style="--d:.2s"><span class="mono">Files</span><h3>Scanned attachments</h3><p>Release files are checked by a malware scanner before they can be made public.</p></article>
+        <article class="tile reveal" style="--d:.25s"><span class="mono">Trace</span><h3>Audit log</h3><p>An append-only record of every change, approval and publication, exportable as CSV.</p></article>
+        <article class="tile reveal" style="--d:.3s"><span class="mono">Connect</span><h3>GitHub and deploys</h3><p>GitHub App and signed webhooks link commits and deployments to releases.</p></article>
+        <article class="tile reveal" style="--d:.35s"><span class="mono">Measure</span><h3>Reader analytics</h3><p>Page and release views without visitor tracking, with export for reports.</p></article>
+      </div>
+    </section>
+
+    <!-- ROLES + SECURITY -->
+    <section class="section duo">
+      <article class="panel reveal">
+        <p class="kicker">// Users &amp; roles</p>
+        <h3 class="h3">The right person for each step.</h3>
+        <p>Roles are set per project. System administrators manage everyone from one page, with one-time password links instead of shared passwords.</p>
+        <ul class="chips"><li>System admin</li><li>Admin</li><li>Release manager</li><li>Developer</li><li>Reviewer</li><li>Client</li></ul>
+      </article>
+      <article class="panel reveal" style="--d:.08s">
+        <p class="kicker">// Security</p>
+        <h3 class="h3">Public pages read approved snapshots only.</h3>
+        <p>The public site can't see drafts or internal notes. Published snapshots can't be edited, only revoked.</p>
+        <ul class="chips"><li>Two-person approval</li><li>Immutable snapshots</li><li>Single sign-on (OIDC)</li><li>HttpOnly sessions</li><li>Rate-limited public API</li><li>Content Security Policy</li></ul>
+      </article>
+    </section>
+
+    <!-- SETUP -->
+    <section class="section" id="setup">
+      <div class="section-head">
+        <p class="kicker">// Setup</p>
+        <h2 class="h2">Running on your machine in a few minutes.</h2>
+        <p class="body">DocPulse is a NestJS API, a background worker and two web apps. One compose file starts them with PostgreSQL and Redis for local use.</p>
+      </div>
+
+      <div class="setup-grid">
+        <ol class="setup-steps">
+          <li class="reveal">
+            <span class="mono">01 · Before you start</span>
+            <p>A machine with <b>Git</b>, <b>Docker</b> and <b>Docker Compose</b>, and at least <b>3 GB</b> of memory for Docker.</p>
+          </li>
+          <li class="reveal">
+            <span class="mono">02 · Get the code</span>
+            <div class="code"><button class="copy" type="button">Copy</button><pre><code>git clone https://github.com/KasunRocz-Softwares/DocPulse.git
+cd DocPulse</code></pre></div>
+          </li>
+          <li class="reveal">
+            <span class="mono">03 · Start it</span>
+            <div class="code"><button class="copy" type="button">Copy</button><pre><code>docker compose up -d --build</code></pre></div>
+            <p>The first build takes a few minutes. Then open the admin portal at <b>http://localhost:5173</b> and the public site at <b>http://localhost:5174</b>.</p>
+          </li>
+          <li class="reveal">
+            <span class="mono">04 · Create the first admin</span>
+            <p>On the sign-in page choose <b>Create its first admin</b>. The local bootstrap secret is set in <code>docker-compose.yml</code>; it only works while no users exist.</p>
+          </li>
+        </ol>
+
+        <div class="files reveal">
+          <span class="mono">Ports</span>
+          <ul class="ports">
+            <li><b>5173</b><span>Admin portal</span></li>
+            <li><b>5174</b><span>Public release pages</span></li>
+            <li><b>13001</b><span>API, health and Swagger docs</span></li>
+            <li><b>15432</b><span>PostgreSQL</span></li>
+          </ul>
+          <span class="mono">Import your GitHub releases</span>
+          <div class="code"><button class="copy" type="button">Copy</button><pre><code>node scripts/dev/import-github-releases.mjs \
+  --repo your-org/your-repo --line prod \
+  --admin-email you@example.com --dry-run</code></pre></div>
+          <p class="files-note">Drop <code>--dry-run</code> to publish. It asks for the publisher's and the reviewer's passwords and uses your GitHub CLI login.</p>
+        </div>
+      </div>
+
+      <div class="setup-more">
+        <article class="panel reveal">
+          <p class="kicker">// Production</p>
+          <p>Use <code>Dockerfile.production</code> and <code>docker-compose.production.yml</code>. Secrets come from your secret manager, never from the repository.</p>
+        </article>
+        <article class="panel reveal" style="--d:.06s">
+          <p class="kicker">// Your own domain</p>
+          <p>Nginx serves the public site on your main host and the admin portal on an <code>admin.</code> host, behind your TLS proxy.</p>
+        </article>
+        <article class="panel reveal" style="--d:.12s">
+          <p class="kicker">// Backups</p>
+          <p>Scripts for PostgreSQL and attachment backups, verified restores and off-site copies are in <code>scripts/operations</code>, with runbooks in <code>docs/runbooks</code>.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section stack-band">
+      <span class="mono">Built with</span>
+      <ul class="chips">
+        <li>NestJS</li><li>React 19</li><li>Vite</li><li>Prisma</li><li>PostgreSQL</li><li>Redis</li><li>BullMQ</li><li>Turborepo</li><li>Docker</li>
+      </ul>
+    </section>
+
+    <section class="cta-band reveal">
+      <h2 class="h2">Ship release notes people can trust.</h2>
+      <p class="body">DocPulse is a KasunRocz Softwares project. The source code is on GitHub.</p>
+      <div class="cta-row center">
+        <a class="btn btn-primary btn-lg" href="https://github.com/KasunRocz-Softwares/DocPulse">View the source</a>
+        <a class="btn btn-ghost btn-lg" href="https://qulaxy.com/">More projects</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>DocPulse · a <a href="https://qulaxy.com/">KasunRocz Softwares</a> project</span>
+    <a href="https://qulaxy.com/">← All projects</a>
+  </footer>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "d643285744554e93a90cdbb2d4b0c597"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
