@@ -15,5 +15,7 @@ Plain static files, no build step:
 - `kr-hero.js` — the shared 3D hero planet ("waves" kind; Three.js from jsDelivr; the page works without it).
   It is a copy of the shared file used by the other project sites; update them together.
 - `icon.svg`, `og.png` — tab icon and link-preview image
+- `setup/docker-compose.yml`, `setup/env.example` — the self-host files shown and offered for download in the Setup section.
+  They are copies of `deploy/` in the DocPulse repo; update both together.
 
 Preview locally with `python -m http.server` in this folder. GitHub Pages publishes `main` on every push.

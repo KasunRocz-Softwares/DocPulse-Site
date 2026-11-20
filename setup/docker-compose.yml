@@ -1,0 +1,116 @@
+# DocPulse — self-hosted stack using the published images.
+#
+#   1. Put this file and .env (copied from env.example) in an empty folder.
+#   2. Fill in POSTGRES_PASSWORD and the six secrets in .env.
+#   3. docker compose up -d
+#   4. Open http://admin.localhost:8080 and choose "Create its first admin"
+#      (it asks for BOOTSTRAP_SECRET). Release pages are on http://localhost:8080.
+#
+# The web container serves the admin portal on "admin." + your address and the
+# public release pages on the address itself, and proxies /api to the API.
+name: docpulse
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-docpulse}
+      POSTGRES_USER: ${POSTGRES_USER:-docpulse}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Applies database migrations, then exits. The API waits for it.
+  migrate:
+    image: ghcr.io/kasunrocz-softwares/docpulse-migrate:${DOCPULSE_VERSION:-latest}
+    restart: "no"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-docpulse}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-docpulse}?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    image: ghcr.io/kasunrocz-softwares/docpulse-api:${DOCPULSE_VERSION:-latest}
+    restart: unless-stopped
+    environment: &app-env
+      NODE_ENV: production
+      API_PORT: "3001"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-docpulse}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-docpulse}?schema=public
+      REDIS_URL: redis://redis:6379
+      RDPS_API_URL: http://api:3001
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Set JWT_ACCESS_SECRET in .env}
+      BOOTSTRAP_SECRET: ${BOOTSTRAP_SECRET:?Set BOOTSTRAP_SECRET in .env}
+      RDPS_WORKER_SHARED_SECRET: ${WORKER_SECRET:?Set WORKER_SECRET in .env}
+      NOTIFICATION_WORKER_SECRET: ${NOTIFICATION_SECRET:?Set NOTIFICATION_SECRET in .env}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:?Set GITHUB_WEBHOOK_SECRET in .env}
+      DEPLOYMENT_WEBHOOK_SECRET: ${DEPLOYMENT_WEBHOOK_SECRET:?Set DEPLOYMENT_WEBHOOK_SECRET in .env}
+      PUBLIC_BASE_URL: ${PUBLIC_URL:-http://localhost:8080}
+      WEB_BASE_URL: ${ADMIN_URL:-http://admin.localhost:8080},${PUBLIC_URL:-http://localhost:8080}
+      RDPS_UPLOAD_DIR: /var/lib/rdps/uploads
+      EMAIL_DELIVERY_URL: ${EMAIL_DELIVERY_URL:-}
+      EMAIL_DELIVERY_TOKEN: ${EMAIL_DELIVERY_TOKEN:-}
+      CLAMAV_HOST: ${CLAMAV_HOST:-}
+      TRUSTED_PROXY_IPS: ${TRUSTED_PROXY_IPS:-}
+    volumes:
+      - uploads:/var/lib/rdps/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3001/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  worker:
+    image: ghcr.io/kasunrocz-softwares/docpulse-worker:${DOCPULSE_VERSION:-latest}
+    restart: unless-stopped
+    environment: *app-env
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    image: ghcr.io/kasunrocz-softwares/docpulse-web:${DOCPULSE_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      PUBLIC_BASE_URL: ${PUBLIC_URL:-http://localhost:8080}
+      PUBLIC_METADATA_API_BASE_URL: http://api:3001/api/v1/public
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads:

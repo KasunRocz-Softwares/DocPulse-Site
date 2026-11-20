@@ -27,7 +27,7 @@ function initNoteCard() {
   const notes = [
     { v: 'v2.4.0', t: 'Faster checkout', d: 'Released Nov 10', c: [['Feature', 'Save cards for next time'], ['Improvement', 'Checkout loads twice as fast'], ['Fix', 'Coupon totals round correctly']] },
     { v: 'v2.4.0-hotfix.1', t: 'Checkout hotfix', d: 'Released Nov 12', c: [['Hotfix', 'Card form works on older Safari']] },
-    { v: 'v2.5.0', t: 'Delivery reports', d: 'Released Nov 17', c: [['Feature', 'Courier delivery report'], ['Security', 'Sign-in alerts for new devices'], ['Improvement', 'Clearer order timeline']] },
+    { v: 'v2.5.0', t: 'Team workspaces', d: 'Released Nov 17', c: [['Feature', 'Shared team workspaces'], ['Security', 'Sign-in alerts for new devices'], ['Improvement', 'Clearer order timeline']] },
   ];
   const version = document.getElementById('note-version');
   const title = document.getElementById('note-title');
@@ -124,10 +124,45 @@ function initDesigner() {
   bind('layout-seg', 'layout');
 }
 
-/* ---------------- Copy buttons ---------------- */
-function initCopy() {
+/* ---------------- Setup: tabs, live file contents, copy buttons ---------------- */
+function initSetup() {
+  document.querySelectorAll('.os-tabs, .file-tabs').forEach((list) => {
+    const tabs = [...list.querySelectorAll('[role="tab"]')];
+    const select = (t) => tabs.forEach((x) => {
+      const on = x === t;
+      x.setAttribute('aria-selected', String(on));
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (!d) return;
+        const n = tabs[(i + d + tabs.length) % tabs.length];
+        select(n); n.focus();
+      });
+    });
+  });
+  // Show the real files, so the page and the downloads can never disagree.
+  document.querySelectorAll('code[data-src]').forEach((code) => {
+    fetch(code.dataset.src, { cache: 'no-cache' })
+      .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+      .then((text) => {
+        code.replaceChildren(...text.split('\n').flatMap((line, i) => {
+          const parts = [];
+          if (i) parts.push(document.createTextNode('\n'));
+          const m = /^(\s*)(#.*)$/.exec(line);
+          if (m) { parts.push(document.createTextNode(m[1])); const c = document.createElement('span'); c.className = 'c'; c.textContent = m[2]; parts.push(c); }
+          else parts.push(document.createTextNode(line));
+          return parts;
+        }));
+      })
+      .catch(() => { /* keep the fallback link */ });
+  });
   document.querySelectorAll('.copy').forEach((b) => b.addEventListener('click', async () => {
-    const text = b.closest('.code').querySelector('code').innerText;
+    const host = b.closest('.code, .file');
+    const text = host.querySelector('code').innerText;
     try { await navigator.clipboard.writeText(text); b.textContent = 'Copied'; b.classList.add('done'); }
     catch { b.textContent = 'Select & copy'; }
     setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done'); }, 1800);
@@ -154,4 +189,4 @@ nav.querySelectorAll('.nav-links a').forEach((a) => a.addEventListener('click', 
 initNoteCard();
 initPipeline();
 initDesigner();
-initCopy();
+initSetup();

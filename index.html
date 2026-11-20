@@ -186,17 +186,17 @@
       <div class="demo reveal">
         <div class="map-table">
           <div class="map-row map-headrow"><span class="mono">GitHub tag</span><span class="mono">DocPulse version</span><span class="mono">Type</span></div>
-          <div class="map-row"><code>prod-1.24.0</code><b>1.24.0</b><span class="tag">Minor</span></div>
-          <div class="map-row"><code>prod-1.25.0</code><b>1.25.0</b><span class="tag">Minor</span></div>
-          <div class="map-row"><code>prod-1.25.0.1</code><b>1.25.0-hotfix.1</b><span class="tag tag-hot">Hotfix</span></div>
-          <div class="map-row"><code>prod-1.25.2</code><b>1.25.2</b><span class="tag">Patch</span></div>
+          <div class="map-row"><code>stable-3.1.0</code><b>3.1.0</b><span class="tag">Minor</span></div>
+          <div class="map-row"><code>stable-3.2.0</code><b>3.2.0</b><span class="tag">Minor</span></div>
+          <div class="map-row"><code>stable-3.2.0.1</code><b>3.2.0-hotfix.1</b><span class="tag tag-hot">Hotfix</span></div>
+          <div class="map-row"><code>stable-3.2.4</code><b>3.2.4</b><span class="tag">Patch</span></div>
         </div>
         <div class="demo-side">
           <span class="mono">One pull-request line</span>
-          <p class="raw"><code>* Feature/z93r0b7fju courier delivery report by @dev in https://github.com/acme/web/pull/716</code></p>
+          <p class="raw"><code>* feat/k4x9q2 dark mode for reports by @octo-dev in https://github.com/acme/web/pull/128</code></p>
           <span class="arrow" aria-hidden="true">↓</span>
-          <p class="clean"><span class="tag">Feature</span>Courier delivery report</p>
-          <p class="demo-sub">The author handle and link stay in the internal notes. The real GitHub release date is kept, and re-running the import skips what's already there.</p>
+          <p class="clean"><span class="tag">Feature</span>Dark mode for reports</p>
+          <p class="demo-sub">The author handle and link stay in the internal notes. The real GitHub release date is kept, and re-running the import skips what's already there. The importer script is in the <a class="inline-link" href="https://github.com/KasunRocz-Softwares/DocPulse">source repository</a>.</p>
         </div>
       </div>
     </section>
@@ -239,62 +239,97 @@
     <section class="section" id="setup">
       <div class="section-head">
         <p class="kicker">// Setup</p>
-        <h2 class="h2">Running on your machine in a few minutes.</h2>
-        <p class="body">DocPulse is a NestJS API, a background worker and two web apps. One compose file starts them with PostgreSQL and Redis for local use.</p>
+        <h2 class="h2">Running on your own server in five minutes.</h2>
+        <p class="body">DocPulse ships as four Docker images. One compose file starts them with PostgreSQL and Redis, and serves the release pages and the admin portal from a single port.</p>
       </div>
 
       <div class="setup-grid">
         <ol class="setup-steps">
           <li class="reveal">
             <span class="mono">01 · Before you start</span>
-            <p>A machine with <b>Git</b>, <b>Docker</b> and <b>Docker Compose</b>, and at least <b>3 GB</b> of memory for Docker.</p>
+            <p>Any Linux, macOS or Windows machine with <b>Docker</b> and <b>Docker Compose v2</b> (included in current Docker Desktop and Docker Engine), and about <b>2 GB</b> of free memory.</p>
           </li>
           <li class="reveal">
-            <span class="mono">02 · Get the code</span>
-            <div class="code"><button class="copy" type="button">Copy</button><pre><code>git clone https://github.com/KasunRocz-Softwares/DocPulse.git
-cd DocPulse</code></pre></div>
+            <span class="mono">02 · Download the two files</span>
+            <div class="os-tabs" role="tablist" aria-label="Your system">
+              <button type="button" role="tab" aria-selected="true" aria-controls="dl-unix" id="t-unix">Linux / macOS</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="dl-win" id="t-win" tabindex="-1">Windows</button>
+            </div>
+            <div class="code" role="tabpanel" id="dl-unix" aria-labelledby="t-unix"><button class="copy" type="button">Copy</button><pre><code>mkdir docpulse &amp;&amp; cd docpulse
+curl -fsSLO https://qulaxy.com/DocPulse-Site/setup/docker-compose.yml
+curl -fsSL -o .env https://qulaxy.com/DocPulse-Site/setup/env.example</code></pre></div>
+            <div class="code" role="tabpanel" id="dl-win" aria-labelledby="t-win" hidden><button class="copy" type="button">Copy</button><pre><code>mkdir docpulse; cd docpulse
+Invoke-WebRequest https://qulaxy.com/DocPulse-Site/setup/docker-compose.yml -OutFile docker-compose.yml
+Invoke-WebRequest https://qulaxy.com/DocPulse-Site/setup/env.example -OutFile .env</code></pre></div>
           </li>
           <li class="reveal">
-            <span class="mono">03 · Start it</span>
-            <div class="code"><button class="copy" type="button">Copy</button><pre><code>docker compose up -d --build</code></pre></div>
-            <p>The first build takes a few minutes. Then open the admin portal at <b>http://localhost:5173</b> and the public site at <b>http://localhost:5174</b>.</p>
+            <span class="mono">03 · Set the secrets</span>
+            <p>Open <code>.env</code> and give <code>POSTGRES_PASSWORD</code> and the six secrets long random values. This fills them all in for you:</p>
+            <div class="os-tabs" role="tablist" aria-label="Your system">
+              <button type="button" role="tab" aria-selected="true" aria-controls="sec-unix" id="t-sec-unix">Linux / macOS</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="sec-win" id="t-sec-win" tabindex="-1">Windows</button>
+            </div>
+            <div class="code" role="tabpanel" id="sec-unix" aria-labelledby="t-sec-unix"><button class="copy" type="button">Copy</button><pre><code>for k in POSTGRES_PASSWORD JWT_ACCESS_SECRET BOOTSTRAP_SECRET WORKER_SECRET \
+         NOTIFICATION_SECRET GITHUB_WEBHOOK_SECRET DEPLOYMENT_WEBHOOK_SECRET; do
+  sed -i.bak "s|^$k=.*|$k=$(openssl rand -hex 32)|" .env
+done</code></pre></div>
+            <div class="code" role="tabpanel" id="sec-win" aria-labelledby="t-sec-win" hidden><button class="copy" type="button">Copy</button><pre><code>$rng = [Security.Cryptography.RandomNumberGenerator]::Create()
+$env_ = Get-Content .env
+foreach ($k in 'POSTGRES_PASSWORD','JWT_ACCESS_SECRET','BOOTSTRAP_SECRET','WORKER_SECRET',
+               'NOTIFICATION_SECRET','GITHUB_WEBHOOK_SECRET','DEPLOYMENT_WEBHOOK_SECRET') {
+  $b = New-Object byte[] 32; $rng.GetBytes($b)
+  $env_ = $env_ -replace "^$k=.*", ("$k=" + (($b | ForEach-Object { $_.ToString('x2') }) -join ''))
+}
+$env_ | Set-Content .env</code></pre></div>
           </li>
           <li class="reveal">
-            <span class="mono">04 · Create the first admin</span>
-            <p>On the sign-in page choose <b>Create its first admin</b>. The local bootstrap secret is set in <code>docker-compose.yml</code>; it only works while no users exist.</p>
+            <span class="mono">04 · Start it</span>
+            <div class="code"><button class="copy" type="button">Copy</button><pre><code>docker compose up -d</code></pre></div>
+            <p>Open the admin portal at <b>http://admin.localhost:8080</b>, choose <b>Create its first admin</b> and enter the <code>BOOTSTRAP_SECRET</code> from <code>.env</code>. Release pages appear on <b>http://localhost:8080</b>. The first start takes a minute while the database is prepared.</p>
           </li>
         </ol>
 
         <div class="files reveal">
-          <span class="mono">Ports</span>
-          <ul class="ports">
-            <li><b>5173</b><span>Admin portal</span></li>
-            <li><b>5174</b><span>Public release pages</span></li>
-            <li><b>13001</b><span>API, health and Swagger docs</span></li>
-            <li><b>15432</b><span>PostgreSQL</span></li>
-          </ul>
-          <span class="mono">Import your GitHub releases</span>
-          <div class="code"><button class="copy" type="button">Copy</button><pre><code>node scripts/dev/import-github-releases.mjs \
-  --repo your-org/your-repo --line prod \
-  --admin-email you@example.com --dry-run</code></pre></div>
-          <p class="files-note">Drop <code>--dry-run</code> to publish. It asks for the publisher's and the reviewer's passwords and uses your GitHub CLI login.</p>
+          <div class="file-tabs" role="tablist" aria-label="Setup files">
+            <button type="button" role="tab" aria-selected="true" aria-controls="f-compose" id="t-compose">docker-compose.yml</button>
+            <button type="button" role="tab" aria-selected="false" aria-controls="f-env" id="t-env" tabindex="-1">.env</button>
+          </div>
+          <div class="file" role="tabpanel" id="f-compose" aria-labelledby="t-compose">
+            <div class="file-bar"><a href="setup/docker-compose.yml" download>Download</a><button class="copy" type="button">Copy</button></div>
+            <pre><code data-src="setup/docker-compose.yml">Loading… <a href="setup/docker-compose.yml">open docker-compose.yml</a></code></pre>
+          </div>
+          <div class="file" role="tabpanel" id="f-env" aria-labelledby="t-env" hidden>
+            <div class="file-bar"><a href="setup/env.example" download=".env">Download</a><button class="copy" type="button">Copy</button></div>
+            <pre><code data-src="setup/env.example">Loading… <a href="setup/env.example">open env.example</a></code></pre>
+          </div>
         </div>
       </div>
 
       <div class="setup-more">
         <article class="panel reveal">
-          <p class="kicker">// Production</p>
-          <p>Use <code>Dockerfile.production</code> and <code>docker-compose.production.yml</code>. Secrets come from your secret manager, never from the repository.</p>
+          <p class="kicker">// Your own domain</p>
+          <p>Point two names at the server, such as <code>releases.example.com</code> and <code>admin.releases.example.com</code>, and set <code>PUBLIC_URL</code> and <code>ADMIN_URL</code> in <code>.env</code>. Put HTTPS in front with your usual proxy, and list it in <code>TRUSTED_PROXY_IPS</code>.</p>
         </article>
         <article class="panel reveal" style="--d:.06s">
-          <p class="kicker">// Your own domain</p>
-          <p>Nginx serves the public site on your main host and the admin portal on an <code>admin.</code> host, behind your TLS proxy.</p>
+          <p class="kicker">// Updates</p>
+          <div class="code"><button class="copy" type="button">Copy</button><pre><code>docker compose pull
+docker compose up -d</code></pre></div>
+          <p>Database changes apply automatically on start. Pin a version with <code>DOCPULSE_VERSION</code> in <code>.env</code>.</p>
         </article>
         <article class="panel reveal" style="--d:.12s">
           <p class="kicker">// Backups</p>
-          <p>Scripts for PostgreSQL and attachment backups, verified restores and off-site copies are in <code>scripts/operations</code>, with runbooks in <code>docs/runbooks</code>.</p>
+          <div class="code"><button class="copy" type="button">Copy</button><pre><code>docker compose exec postgres \
+  pg_dump -U docpulse docpulse &gt; backup.sql</code></pre></div>
+          <p>Email delivery and malware scanning for attachments are optional and set in <code>.env</code>.</p>
         </article>
       </div>
+
+      <ul class="images reveal" aria-label="Published images">
+        <li><span class="mono">API</span><code>ghcr.io/kasunrocz-softwares/docpulse-api</code></li>
+        <li><span class="mono">Web (release pages + admin)</span><code>ghcr.io/kasunrocz-softwares/docpulse-web</code></li>
+        <li><span class="mono">Background worker</span><code>ghcr.io/kasunrocz-softwares/docpulse-worker</code></li>
+        <li><span class="mono">Database migrations</span><code>ghcr.io/kasunrocz-softwares/docpulse-migrate</code></li>
+      </ul>
     </section>
 
     <section class="section stack-band">
@@ -306,9 +341,10 @@ cd DocPulse</code></pre></div>
 
     <section class="cta-band reveal">
       <h2 class="h2">Ship release notes people can trust.</h2>
-      <p class="body">DocPulse is a KasunRocz Softwares project. The source code is on GitHub.</p>
+      <p class="body">DocPulse is a KasunRocz Softwares project. The source code and the Docker images are public.</p>
       <div class="cta-row center">
-        <a class="btn btn-primary btn-lg" href="https://github.com/KasunRocz-Softwares/DocPulse">View the source</a>
+        <a class="btn btn-primary btn-lg" href="#setup">Set it up with Docker</a>
+        <a class="btn btn-ghost btn-lg" href="https://github.com/KasunRocz-Softwares/DocPulse">View the source</a>
         <a class="btn btn-ghost btn-lg" href="https://qulaxy.com/">More projects</a>
       </div>
     </section>

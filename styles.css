@@ -333,7 +333,6 @@ code { font-family: var(--mono); font-size: .88em; color: #ffd3e8; background: r
 .clean { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; min-width: 0; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(var(--accent-rgb), .35); background: rgba(var(--accent-rgb), .06); font-weight: 600; }
 
 /* Setup side panel */
-.files { gap: 14px; padding: 20px; }
 .ports { display: grid; gap: 6px; }
 .ports li { display: flex; align-items: baseline; gap: 14px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255, 255, 255, .02); }
 .ports b { font-family: var(--mono); font-weight: 500; color: var(--accent); min-width: 52px; }
@@ -350,3 +349,7 @@ code { font-family: var(--mono); font-size: .88em; color: #ffd3e8; background: r
 @media (max-width: 1080px) {
   .split, .demo, .pipeline-detail { grid-template-columns: minmax(0, 1fr); }
 }
+
+.inline-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.images { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .images { grid-template-columns: minmax(0, 1fr); } }
